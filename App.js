@@ -1,43 +1,71 @@
-import React, { useState } from "react";
-import { SafeAreaView } from "react-native";
-import shortid from "shortid";
+import React, { useEffect, useState } from "react";
+import { SafeAreaView, Text } from "react-native";
 
+// components
 import TodoForm from "./src/components/todoForm";
 import Todos from "./src/components/todos";
 
+// api
+import * as api from "./src/api";
+
 export default function App() {
-  const initialTodos = [
-    { id: shortid.generate(), text: "Clean room" },
-    { id: shortid.generate(), text: "Do the dishes" }
-  ];
   // a getter and setter for each type of state
-  const [todos, setTodos] = useState(initialTodos);
+  const [todos, setTodos] = useState([]);
   const [text, setText] = useState("");
   const [editing, setEditing] = useState(false);
   const [currentTodo, setCurrentTodo] = useState("");
+  const [hasError, setError] = useState(false);
 
+  // fetch todos from the API
+  useEffect(() => {
+    this.fetchTodos();
+  }, []);
+
+  fetchTodos = async () => {
+    try {
+      const todos = await api.listTodos();
+      setTodos(todos);
+    } catch (error) {
+      setError(true);
+    }
+  };
+
+  // crud operations
   createTodo = async () => {
-    setTodos([...todos, { text, id: shortid.generate() }]);
-    setText("");
-    // TODO: add todo to the cloud
+    try {
+      const createdTodo = await api.createTodo(text);
+      setTodos([...todos, { id: createdTodo.id, text }]);
+      setText("");
+    } catch (error) {
+      setError(true);
+    }
   };
 
-  deleteTodo = id => {
-    setTodos(todos.filter(todo => todo.id !== id));
-    // TODO: delete the todo from the cloud
+  deleteTodo = async id => {
+    try {
+      await api.deleteTodo(id);
+      setTodos(todos.filter(todo => todo.id !== id));
+    } catch (error) {
+      setError(true);
+    }
   };
 
-  updateTodo = () => {
-    setTodos(
-      todos.map(todo =>
-        todo.id === currentTodo ? { id: currentTodo, text } : todo
-      )
-    );
-    setText("");
-    setEditing(false);
-    // TODO: Update todo in the cloud
+  updateTodo = async () => {
+    try {
+      await api.updateTodo({ id: currentTodo, text });
+      setTodos(
+        todos.map(todo =>
+          todo.id === currentTodo ? { id: currentTodo, text } : todo
+        )
+      );
+      setText("");
+      setEditing(false);
+    } catch (error) {
+      setError(true);
+    }
   };
 
+  // helper function for updating todo
   editTodo = ({ id, text }) => {
     setEditing(true);
     setCurrentTodo(id);
@@ -47,6 +75,11 @@ export default function App() {
 
   return (
     <SafeAreaView>
+      {hasError && (
+        <Text style={{ alignSelf: "center", margin: 10, color: "red" }}>
+          Something went wrong. Please try again.
+        </Text>
+      )}
       <TodoForm
         editing={editing}
         text={text}
@@ -54,6 +87,7 @@ export default function App() {
         createTodo={this.createTodo}
         updateTodo={this.updateTodo}
       />
+
       <Todos
         todos={todos}
         editTodo={this.editTodo}

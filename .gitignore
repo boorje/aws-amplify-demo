@@ -27,4 +27,3 @@ awsconfiguration.json
 
 amplify/
 aws-exports.js
-package-lock.json

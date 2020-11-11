@@ -4,7 +4,7 @@ import {
   Text,
   TextInput,
   TouchableHighlight,
-  View
+  View,
 } from "react-native";
 
 export default function TodoForm(props) {
@@ -12,17 +12,14 @@ export default function TodoForm(props) {
   return (
     <View style={styles.createTodoContainer}>
       <TextInput
-        onChangeText={text => setText(text)}
+        onChangeText={(text) => setText(text)}
         value={text}
         placeholder="add a todo"
         onSubmitEditing={() => (editing ? updateTodo() : createTodo())}
         style={styles.input}
-        ref={input => {
-          this.textInput = input;
-        }}
       />
       <TouchableHighlight
-        onPress={() => (editing ? this.updateTodo() : this.createTodo())}
+        onPress={() => (editing ? updateTodo() : createTodo())}
         style={styles.submitButton}
         underlayColor="#47567a"
       >
@@ -35,21 +32,21 @@ export default function TodoForm(props) {
 const styles = StyleSheet.create({
   createTodoContainer: {
     display: "flex",
-    margin: 30
+    margin: 30,
   },
   submitButton: {
     backgroundColor: "#2a3859",
     padding: 13,
     margin: 10,
-    borderRadius: 3
+    borderRadius: 3,
   },
   input: {
     borderColor: "#eee",
     padding: 10,
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
   },
   buttonText: {
     textAlign: "center",
-    color: "#fff"
-  }
+    color: "#fff",
+  },
 });

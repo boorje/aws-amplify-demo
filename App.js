@@ -18,10 +18,10 @@ export default function App() {
 
   // fetch todos from the API
   useEffect(() => {
-    this.fetchTodos();
+    fetchTodos();
   }, []);
 
-  fetchTodos = async () => {
+  const fetchTodos = async () => {
     try {
       const todos = await api.listTodos();
       setTodos(todos);
@@ -31,7 +31,7 @@ export default function App() {
   };
 
   // crud operations
-  createTodo = async () => {
+  const createTodo = async () => {
     try {
       const createdTodo = await api.createTodo(text);
       setTodos([...todos, { id: createdTodo.id, text }]);
@@ -41,20 +41,20 @@ export default function App() {
     }
   };
 
-  deleteTodo = async id => {
+  const deleteTodo = async (id) => {
     try {
       await api.deleteTodo(id);
-      setTodos(todos.filter(todo => todo.id !== id));
+      setTodos(todos.filter((todo) => todo.id !== id));
     } catch (error) {
       setError(true);
     }
   };
 
-  updateTodo = async () => {
+  const updateTodo = async () => {
     try {
       await api.updateTodo({ id: currentTodo, text });
       setTodos(
-        todos.map(todo =>
+        todos.map((todo) =>
           todo.id === currentTodo ? { id: currentTodo, text } : todo
         )
       );
@@ -66,7 +66,7 @@ export default function App() {
   };
 
   // helper function for updating todo
-  editTodo = ({ id, text }) => {
+  const editTodo = ({ id, text }) => {
     setEditing(true);
     setCurrentTodo(id);
     setText(text);
@@ -84,15 +84,11 @@ export default function App() {
         editing={editing}
         text={text}
         setText={setText}
-        createTodo={this.createTodo}
-        updateTodo={this.updateTodo}
+        createTodo={createTodo}
+        updateTodo={updateTodo}
       />
 
-      <Todos
-        todos={todos}
-        editTodo={this.editTodo}
-        deleteTodo={this.deleteTodo}
-      />
+      <Todos todos={todos} editTodo={editTodo} deleteTodo={deleteTodo} />
     </SafeAreaView>
   );
 }

@@ -13,23 +13,23 @@ export const listTodos = async () => {
   return data.listTodos.items;
 };
 
-export const createTodo = async todo => {
+export const createTodo = async (todo) => {
   const { data } = await API.graphql(
     graphqlOperation(mutations.createTodo, {
-      input: { text: todo }
+      input: { text: todo },
     })
   );
   return data.createTodo;
 };
 
-export const updateTodo = async input => {
+export const updateTodo = async (input) => {
   const { data } = await API.graphql(
     graphqlOperation(mutations.updateTodo, { input })
   );
   return data.updateTodo;
 };
 
-export const deleteTodo = async id => {
+export const deleteTodo = async (id) => {
   const { data } = await API.graphql(
     graphqlOperation(mutations.deleteTodo, { input: { id } })
   );
